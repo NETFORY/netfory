@@ -1,0 +1,55 @@
+/* Оболочка отдельного мессенджера: окно без системного хрома, чат во весь экран. */
+html, body, #app { height: 100%; margin: 0; background: var(--bg, #0b0f14); color: var(--text, #d7dee8); }
+.msg-shell { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+.msg-titlebar { display: flex; align-items: center; gap: 12px; height: 34px; padding: 0 10px 0 14px; background: var(--panel, #0f151c); border-bottom: 1px solid var(--border, #1b2430); font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: 0.12em; user-select: none; -webkit-app-region: drag; }
+.msg-titlebar .ttl { color: var(--accent, #2dd4bf); font-weight: 700; }
+.msg-titlebar .st { display: inline-flex; align-items: center; gap: 6px; color: var(--text-dim, #8a94a6); }
+.msg-titlebar .st .dot { width: 6px; height: 6px; border-radius: 50%; background: #f0b429; }
+.msg-titlebar .st.on .dot { background: var(--success, #34d399); box-shadow: 0 0 6px var(--success, #34d399); }
+.msg-titlebar .sp { flex: 1; }
+.msg-titlebar button { -webkit-app-region: no-drag; background: transparent; border: 0; color: var(--text-dim, #8a94a6); font: inherit; cursor: pointer; padding: 4px 8px; }
+.msg-titlebar button:hover { color: var(--text, #fff); }
+.msg-titlebar button.x:hover { color: #f87171; }
+.msg-body { flex: 1; min-height: 0; display: flex; }
+.msg-body > * { flex: 1; min-width: 0; }
+/* ChatWidget рассчитан на 100vh собственного окна; здесь он заполняет оболочку без обрезки строки ввода */
+.msg-body .cw { height: 100%; }
+.msg-login { margin: auto; width: min(520px, 92vw); padding: 28px; border: 1px solid var(--border, #1b2430); background: var(--panel, #0f151c); font-family: var(--font-mono, monospace); }
+.msg-login h1 { font-size: 16px; letter-spacing: 0.16em; color: var(--accent, #2dd4bf); margin: 0 0 6px; }
+.msg-login p { font-size: 12px; color: var(--text-dim, #8a94a6); margin: 0 0 16px; line-height: 1.5; }
+.msg-login textarea { width: 100%; min-height: 84px; box-sizing: border-box; padding: 10px; background: #0b0f14; color: inherit; border: 1px solid var(--border, #1b2430); font: inherit; font-size: 12px; resize: vertical; }
+.msg-login .row { display: flex; gap: 10px; margin-top: 14px; align-items: center; }
+.msg-login button { padding: 10px 18px; background: var(--accent, #2dd4bf); color: #04110f; border: 0; font: inherit; font-weight: 700; letter-spacing: 0.1em; cursor: pointer; }
+.msg-login button:disabled { opacity: 0.5; cursor: default; }
+.msg-login .err { color: #f87171; font-size: 12px; }
+.msg-login .mode { font-size: 10px; color: var(--text-dim, #8a94a6); letter-spacing: 0.1em; }
+.msg-login .spin { display: inline-block; width: 10px; height: 10px; margin-right: 8px; border: 2px solid var(--accent, #2dd4bf); border-right-color: transparent; border-radius: 50%; animation: msg-spin 0.9s linear infinite; vertical-align: -1px; }
+.msg-login code { font-size: 11px; color: var(--text, #fff); word-break: break-all; }
+@keyframes msg-spin { to { transform: rotate(360deg); } }
+.msg-migrate { position: fixed; right: 16px; bottom: 16px; z-index: 50; padding: 12px 14px; border: 1px solid var(--accent, #2dd4bf); background: var(--panel, #0f151c); font-family: var(--font-mono, monospace); font-size: 11px; max-width: 340px; }
+.msg-migrate button { margin-top: 8px; margin-right: 8px; padding: 6px 12px; background: var(--accent, #2dd4bf); color: #04110f; border: 0; font: inherit; font-weight: 700; cursor: pointer; }
+.msg-migrate button.ghost { background: transparent; color: var(--text-dim, #8a94a6); border: 1px solid var(--border, #1b2430); }
+.msg-login .pin { width: 140px; padding: 8px 10px; background: #0b0f14; color: inherit; border: 1px solid var(--accent, #2dd4bf); font: inherit; font-size: 16px; letter-spacing: 0.3em; text-align: center; }
+.msg-login button.ghost { background: transparent; color: var(--accent, #2dd4bf); border: 1px solid var(--accent, #2dd4bf); }
+.msg-login button.ghost:hover:not(:disabled) { background: rgba(45, 212, 191, 0.12); }
+
+/* --- сканер QR (standalone-вход) --- */
+.qr-scan { display: flex; flex-direction: column; gap: 10px; }
+.qr-head { display: flex; align-items: center; gap: 10px; }
+.qr-head .ttl { font-size: 11px; letter-spacing: 0.16em; color: var(--accent, #2dd4bf); }
+.qr-head .eng { font-size: 10px; color: var(--text-dim, #8a94a6); letter-spacing: 0.1em; }
+.qr-head .sp { flex: 1; }
+.qr-head button { padding: 6px 10px; font-size: 10px; letter-spacing: 0.1em; }
+.qr-view { position: relative; width: min(100%, 520px); margin: 0 auto; aspect-ratio: 4 / 3; background: #000; border: 1px solid var(--border, #1b2430); overflow: hidden; }
+.qr-view video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.qr-frame { position: absolute; inset: 0; margin: auto; width: min(60%, 240px); aspect-ratio: 1; border: 2px solid var(--accent, #2dd4bf); box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.45); pointer-events: none; animation: qr-pulse 1.6s ease-in-out infinite; }
+@keyframes qr-pulse { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+.qr-err { position: absolute; inset: 0; margin: 0; display: flex; align-items: center; justify-content: center; padding: 16px; text-align: center; color: #f87171; font-size: 12px; background: rgba(11, 15, 20, 0.92); }
+.qr-hint { font-size: 11px; color: var(--text-dim, #8a94a6); margin: 0; }
+
+/* ---- телефон (Android): без оконных кнопок, полная высота экрана ---- */
+@media (max-width: 760px) {
+  .msg-shell { height: 100dvh; }
+  .msg-titlebar button { display: none; }
+  .msg-titlebar .st:not([data-testid='messenger-net-status']) { display: none; }
+}

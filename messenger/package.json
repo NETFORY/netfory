@@ -1,0 +1,42 @@
+{
+  "name": "ntfry-messenger",
+  "private": true,
+  "version": "1.0.8",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "build:win": "node scripts/sync-version.cjs && tauri build --bundles msi,nsis",
+    "build:linux": "node scripts/sync-version.cjs && tauri build --bundles deb,rpm,appimage",
+    "build:macos": "node scripts/sync-version.cjs && tauri build --bundles dmg,app",
+    "build:all": "node scripts/sync-version.cjs && tauri build",
+    "android:init": "node scripts/android.cjs init",
+    "android:setup": "node scripts/android-setup.cjs",
+    "android:icons": "tauri icon src-tauri/icons/icon.png",
+    "android:dev": "node scripts/android.cjs dev",
+    "android:dev:lan": "node scripts/android.cjs dev --lan",
+    "android:build": "node scripts/android.cjs build --apk",
+    "android:build:arm64": "node scripts/android.cjs build --apk --target aarch64",
+    "android:build:aab": "node scripts/android.cjs build --aab",
+    "version:sync": "node scripts/sync-version.cjs",
+    "android:verify": "node scripts/android-verify.cjs",
+    "android:signing-report": "node scripts/android-signing-report.cjs"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.4.0",
+    "@tauri-apps/plugin-notification": "^2.3.3",
+    "jsqr": "1.4.0",
+    "pinia": "2.2.6",
+    "vue": "3.5.13",
+    "vue-i18n": "10.0.4",
+    "vue-router": "4.4.5",
+    "vue3-emoji-picker": "^1.1.8"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.4.0",
+    "@vitejs/plugin-vue": "5.2.1",
+    "vite": "5.4.11"
+  }
+}
