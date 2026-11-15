@@ -1,0 +1,19 @@
+{
+  "globals": {
+    "defineProps": "readonly",
+    "defineEmits": "readonly",
+    "defineExpose": "readonly",
+    "defineOptions": "readonly",
+    "defineModel": "readonly",
+    "withDefaults": "readonly",
+    "__UI_VERSION__": "readonly"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.vue"],
+      "rules": {
+        "no-undef": "off"
+      }
+    }
+  ]
+}
