@@ -1,0 +1,899 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+/* Font family + density are user-selectable (Settings → Interface). Driven by
+   [data-font] / [data-density] / [data-size] on <html>; defaults below. */
+html {
+  --font-ui: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
+  /* legacy alias used across components (Dashboard, wallet, modals…) — kept in
+     sync with the user-selected font so the choice applies everywhere. */
+  --font-mono: var(--font-ui);
+  /* Font-weight tiers all derive from the user-chosen base (--ui-fw, default
+     400) so the slider scales every weight proportionally while preserving the
+     heading↔body hierarchy. Components use var(--fw-NNN) instead of literals. */
+  --ui-fw: 400;
+  --fw-400: var(--ui-fw);
+  --fw-500: calc(var(--ui-fw) + 100);
+  --fw-600: calc(var(--ui-fw) + 200);
+  --fw-700: calc(var(--ui-fw) + 300);
+  --fw-800: calc(var(--ui-fw) + 400);
+  --base-fs: 14px;
+  /* veil dimming the user background tile so content stays readable */
+  --bg-veil: rgba(9, 10, 12, 0.82);
+}
+html[data-font='plex'] {
+  --font-ui: 'IBM Plex Mono', ui-monospace, monospace;
+}
+html[data-font='fira'] {
+  --font-ui: 'Fira Code', 'JetBrains Mono', ui-monospace, monospace;
+}
+html[data-font='inter'] {
+  --font-ui: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+html[data-font='tenor'] {
+  --font-ui: 'Tenor Sans', system-ui, sans-serif;
+}
+html[data-font='saira'] {
+  --font-ui: 'Saira', system-ui, sans-serif;
+}
+/* Font size (S/M/L) zooms the whole UI so every text scales reliably —
+   component px sizes don't cascade from a body font-size change. */
+html[data-size='s'] #app {
+  zoom: 0.9;
+}
+html[data-size='l'] #app {
+  zoom: 1.12;
+}
+html[data-theme='readable-light'] {
+  --bg-veil: rgba(243, 244, 246, 0.86);
+}
+html[data-theme='eink'] {
+  --bg-veil: rgba(255, 255, 255, 0.9);
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: var(--base-fs);
+  font-weight: var(--ui-fw, 400);
+  line-height: 1.5;
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+  letter-spacing: 0.01em;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Compact density: tighter line-height + control padding (font size is the
+   separate [data-size] control, so they don't fight). */
+html[data-density='compact'] body {
+  line-height: 1.42;
+}
+html[data-density='compact'] .btn {
+  padding: 7px 12px;
+}
+html[data-density='compact'] .field {
+  padding: 9px 11px;
+}
+
+/* "Disable blur" toggle (Settings → Appearance): kills every backdrop-filter
+   so text rendered over glass panels gets crisp subpixel AA back. !important
+   is required to beat scoped component declarations. */
+html[data-noblur] *,
+html[data-noblur] *::before,
+html[data-noblur] *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Calm matte canvas — grid removed for a clean, unified background */
+#app {
+  position: relative;
+  min-height: 100%;
+  background: var(--app-bg);
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+input,
+button,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary);
+}
+
+/* ---- shared atoms ---- */
+.mono-label {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--secondary);
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Focus theme: solid matte surfaces (no backdrop-filter → crisp text rendering) */
+[data-theme='focus'] .topbar,
+[data-theme='focus'] .sidebar,
+[data-theme='focus'] .tab-strip {
+  background: var(--bg);
+}
+/* Focus de-yellowing: decorative "// TITLE_" headings go neutral */
+[data-theme='focus'] .page-title {
+  color: var(--text);
+}
+
+/* ---- Focus // Metallic Edition: crisp monospace + brushed-steel chrome ---- */
+[data-theme='focus'] body {
+  /* keep glyphs thin & light but sharp — subpixel beats the "jagged" grayscale
+     edges that the flat dark theme exposed. */
+  -webkit-font-smoothing: subpixel-antialiased;
+  -moz-osx-font-smoothing: auto;
+  text-rendering: optimizeLegibility;
+  font-optical-sizing: auto;
+}
+[data-theme='focus'] body,
+[data-theme='focus'] input,
+[data-theme='focus'] button,
+[data-theme='focus'] select {
+  letter-spacing: 0;
+}
+/* brushed-steel secondary buttons with a thin translucent edge */
+[data-theme='focus'] .btn {
+  background: linear-gradient(180deg, #202327 0%, #16181b 100%);
+  border: 1px solid #2c2f36;
+  font-weight: var(--fw-500);
+}
+[data-theme='focus'] .btn:hover {
+  border-color: var(--border-accent);
+  color: var(--accent);
+  background: linear-gradient(180deg, #25282d 0%, #181a1e 100%);
+  box-shadow: 0 0 0 1px rgba(47, 214, 192, 0.22), 0 0 20px -8px var(--accent-glow);
+}
+/* primary CTA: steel→teal gradient instead of solid amber */
+[data-theme='focus'] .btn-primary {
+  background: linear-gradient(135deg, #2e333b 0%, #1d9e8d 100%);
+  border: 1px solid rgba(47, 214, 192, 0.35);
+  color: #eafffb;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+[data-theme='focus'] .btn-primary:hover {
+  background: linear-gradient(135deg, #353b44 0%, #25b8a3 100%);
+  color: #f3fffd;
+  filter: none;
+  box-shadow: 0 0 22px -6px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+/* steel field wells with teal focus edge */
+[data-theme='focus'] .field {
+  background: #121315;
+  border: 1px solid #2c2f36;
+}
+
+/* ============================================================
+   MATTE DARK — restore original sharp cyberpunk decorations
+   (corner brackets, amber accents, glow, hue tiles). The grid
+   canvas and line-pattern backgrounds stay removed by design.
+   Scoped to matte-dark only; Focus/Light/E-Ink keep the flat base.
+   ============================================================ */
+html[data-theme='matte-dark'] .banner {
+  background: linear-gradient(135deg, var(--panel) 0%, var(--panel-2) 100%);
+  border-left: 3px solid var(--accent);
+  box-shadow: none;
+}
+html[data-theme='matte-dark'] .banner-big {
+  text-shadow: 0 0 30px var(--accent-glow);
+}
+html[data-theme='matte-dark'] .cap {
+  background: rgba(0, 0, 0, 0.35);
+}
+html[data-theme='matte-dark'] .cap-title,
+html[data-theme='matte-dark'] .cap-v.load {
+  color: var(--accent);
+}
+html[data-theme='matte-dark'] .cap-v.reward-v {
+  color: var(--accent);
+  text-shadow: 0 0 12px var(--accent-glow);
+}
+html[data-theme='matte-dark'] .cap-bar .seg {
+  background: var(--accent-soft);
+}
+html[data-theme='matte-dark'] .cap-scanline {
+  background: linear-gradient(90deg, transparent, var(--accent-soft), transparent);
+}
+html[data-theme='matte-dark'] .stat-value {
+  color: var(--accent);
+}
+html[data-theme='matte-dark'] .stat-card {
+  transition: border-color 0.18s ease, transform 0.18s ease;
+}
+html[data-theme='matte-dark'] .stat-card:hover {
+  background: var(--panel);
+  border-color: var(--border-accent);
+  transform: translateY(-2px);
+}
+html[data-theme='matte-dark'] .stat-corner {
+  display: block;
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+}
+html[data-theme='matte-dark'] .seed-title {
+  color: var(--accent);
+}
+html[data-theme='matte-dark'] .tile {
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+html[data-theme='matte-dark'] .tile-tag,
+html[data-theme='matte-dark'] .tile-launch,
+html[data-theme='matte-dark'] .tile:hover .tile-launch {
+  color: var(--tile-hue, var(--accent));
+}
+html[data-theme='matte-dark'] .tile-glow {
+  display: block;
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 120px;
+  height: 120px;
+  background: radial-gradient(circle, var(--tile-hue) 0%, transparent 70%);
+  opacity: 0.12;
+  pointer-events: none;
+}
+html[data-theme='matte-dark'] .tile:hover {
+  background: var(--panel);
+  transform: translateY(-4px);
+  border-color: var(--tile-hue, var(--accent));
+  box-shadow: 0 0 0 1px var(--tile-hue), 0 18px 40px -20px var(--tile-hue);
+}
+html[data-theme='matte-dark'] .ns-block {
+  border-left: 3px solid var(--accent);
+  transition: border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+html[data-theme='matte-dark'] .ns-block:hover {
+  background: var(--panel);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 0 26px -10px var(--accent);
+}
+html[data-theme='matte-dark'] .ns-glyph,
+html[data-theme='matte-dark'] .ns-title,
+html[data-theme='matte-dark'] .ns-mine {
+  color: var(--accent);
+}
+html[data-theme='matte-dark'] .nav-item.active {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+html[data-theme='matte-dark'] .nav-item.active::before {
+  background: var(--accent);
+}
+
+/* ============================================================
+   E-INK — force full grayscale across the whole UI and any
+   embedded dApp content (web <iframe>). Native child webviews
+   are grayscaled separately via an injected style (webview.rs).
+   ============================================================ */
+html[data-theme='eink'] #app,
+html[data-theme='eink'] iframe {
+  filter: grayscale(1) !important;
+  -webkit-filter: grayscale(1) !important;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: var(--fw-600);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease,
+    box-shadow 0.18s ease, transform 0.06s ease;
+}
+.btn:hover {
+  border-color: var(--border-accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 1px var(--border-accent), 0 0 22px -6px var(--accent-glow);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0d0f12;
+}
+.btn-primary:hover {
+  background: var(--accent);
+  color: #0d0f12;
+  box-shadow: 0 0 24px -4px var(--accent-glow);
+  filter: brightness(1.06);
+}
+.btn-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+  box-shadow: none;
+}
+.btn-block {
+  width: 100%;
+  justify-content: center;
+}
+
+/* e-ink: invert primary, double borders, kill glow */
+html[data-theme='eink'] .btn-primary {
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+}
+html[data-theme='eink'] .btn:hover {
+  box-shadow: none;
+  color: #000;
+  border-color: #000;
+  text-decoration: underline;
+}
+html[data-theme='eink'] .btn-primary:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+html[data-theme='eink'] .panel {
+  border-width: 1px;
+}
+
+/* readable-light: swap the eye-searing orange CTA fills for a calm metallic
+   slate (accent stays orange only for text/links/selection rings). */
+html[data-theme='readable-light'] .btn-primary {
+  background: linear-gradient(180deg, #6b7280, #4b5563);
+  border-color: #4b5563;
+  color: #ffffff;
+}
+html[data-theme='readable-light'] .btn-primary:hover {
+  background: linear-gradient(180deg, #76808d, #545b66);
+  color: #ffffff;
+  box-shadow: 0 4px 12px -4px rgba(75, 85, 99, 0.5);
+  filter: none;
+}
+
+/* ============================================================
+   Metallic shine sweep — primary CTA (Focus) & all buttons (Matte Dark).
+   A diagonal highlight glides across the button on hover.
+   ============================================================ */
+[data-theme='focus'] .btn-primary,
+[data-theme='matte-dark'] .btn {
+  position: relative;
+  overflow: hidden;
+}
+[data-theme='focus'] .btn-primary::after,
+[data-theme='matte-dark'] .btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.45) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+[data-theme='focus'] .btn-primary:hover::after,
+[data-theme='matte-dark'] .btn:hover::after {
+  left: 145%;
+}
+
+/* ============================================================
+   Matte Dark // XBTS-style metallic buttons (de-yellowed → teal).
+   DEFAULT state is already metallic: brushed steel gradient fill + a
+   thin teal neon border, neon-teal label and a soft glow — exactly like
+   the "НАЧАТЬ ТОРГОВЛЮ" control. Hover brightens the glow + shine sweep.
+   ============================================================ */
+[data-theme='matte-dark'] .btn {
+  background: linear-gradient(180deg, #1b242b 0%, #0e1318 100%);
+  border: 1px solid rgba(46, 227, 198, 0.55);
+  color: var(--accent);
+  border-radius: 2px;
+  text-shadow: 0 0 8px rgba(46, 227, 198, 0.4);
+  box-shadow: 0 0 14px -8px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+[data-theme='matte-dark'] .btn:hover {
+  color: var(--accent-hover);
+  border-color: var(--accent);
+  background: linear-gradient(180deg, #20303a 0%, #101820 100%);
+  box-shadow: 0 0 22px -5px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+[data-theme='matte-dark'] .btn-primary {
+  background: linear-gradient(180deg, #1d2a30 0%, #0e1419 100%);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  text-shadow: 0 0 10px rgba(46, 227, 198, 0.55);
+  box-shadow: 0 0 18px -6px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+[data-theme='matte-dark'] .btn-primary:hover {
+  background: linear-gradient(180deg, #22323a 0%, #111a20 100%);
+  border-color: var(--accent-hover);
+  color: var(--accent-hover);
+  box-shadow: 0 0 26px -4px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+[data-theme='matte-dark'] .btn-danger {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+  color: var(--danger);
+  text-shadow: none;
+  box-shadow: none;
+}
+[data-theme='matte-dark'] .btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+
+/* ============================================================
+   NEON CYBER — glowing dark schematic surfaces.
+   Coral primary, teal outline secondary, magenta danger. Neon borders +
+   glow on hover. Sharp 4px corners. No blur.
+   ============================================================ */
+[data-theme='neon'] .panel {
+  background: var(--panel-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 0 0 1px rgba(47, 224, 200, 0.04), 0 10px 30px -16px rgba(0, 0, 0, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+[data-theme='neon'] .btn {
+  background: var(--panel-2);
+  border: 1px solid rgba(47, 224, 200, 0.5);
+  border-radius: var(--radius);
+  color: var(--status);
+  text-shadow: 0 0 8px var(--teal-glow);
+  box-shadow: 0 0 14px -8px var(--teal-glow), inset 0 0 0 1px rgba(47, 224, 200, 0.05);
+  transition: color 0.16s ease, border-color 0.16s ease, box-shadow 0.2s ease;
+}
+[data-theme='neon'] .btn:hover {
+  color: #5cf0dc;
+  border-color: var(--status);
+  box-shadow: 0 0 22px -4px var(--teal-glow);
+}
+[data-theme='neon'] .btn-primary {
+  background: linear-gradient(180deg, #ff8675, #ef6552);
+  border: 1px solid var(--accent);
+  color: #2a0c07;
+  text-shadow: none;
+  box-shadow: 0 0 22px -4px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+[data-theme='neon'] .btn-primary:hover {
+  background: linear-gradient(180deg, #ff9885, #f6705c);
+  color: #2a0c07;
+  box-shadow: 0 0 30px -2px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+[data-theme='neon'] .btn-danger {
+  background: var(--danger-soft);
+  border: 1px solid var(--danger);
+  color: #f3a8f8;
+  text-shadow: 0 0 8px var(--magenta-glow);
+  box-shadow: 0 0 16px -6px var(--magenta-glow);
+}
+[data-theme='neon'] .btn-danger:hover {
+  background: var(--danger);
+  color: #1a0419;
+  box-shadow: 0 0 26px -2px var(--magenta-glow);
+}
+[data-theme='neon'] .field {
+  background: #0c1318;
+  border: 1px solid rgba(47, 224, 200, 0.35);
+  border-radius: var(--radius);
+  color: var(--text);
+  box-shadow: inset 0 0 12px -6px var(--teal-glow);
+}
+[data-theme='neon'] .field:focus,
+[data-theme='neon'] .field:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(255, 125, 107, 0.3), inset 0 0 14px -6px var(--accent-glow);
+}
+[data-theme='neon'] input[type='checkbox'],
+[data-theme='neon'] input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  flex: none;
+  position: relative;
+  cursor: pointer;
+  background: #0c1318;
+  border: 1px solid rgba(47, 224, 200, 0.5);
+  border-radius: 4px;
+  box-shadow: 0 0 10px -5px var(--teal-glow);
+}
+[data-theme='neon'] input[type='radio'] {
+  border-radius: 50%;
+}
+[data-theme='neon'] input[type='checkbox']:checked,
+[data-theme='neon'] input[type='radio']:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px -3px var(--accent-glow);
+}
+[data-theme='neon'] input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 9px;
+  border: solid #2a0c07;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+[data-theme='neon'] input[type='radio']:checked::after {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #2a0c07;
+}
+
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+.field:focus {
+  border-color: var(--border-accent);
+  box-shadow: 0 0 0 1px var(--border-accent);
+}
+.field::placeholder {
+  color: var(--text-dim);
+  opacity: 0.7;
+}
+
+.hl {
+  color: var(--accent);
+}
+.dim {
+  color: var(--text-dim);
+}
+
+/* entrance animations */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.rise {
+  /* `backwards` (not `both`): keep the pre-animation hidden state during the
+     stagger delay, but RELEASE the transform once done. A lingering transform
+     keeps the card on its own GPU layer, which disables subpixel text AA and
+     makes text look soft — releasing it restores crisp rendering. */
+  animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+.blink {
+  animation: blink 1.1s steps(2, start) infinite;
+}
+@keyframes blink {
+  to {
+    opacity: 0;
+  }
+}
+
+/* ============================================================
+   DEFAULT (Google-стиль) — общие переопределения для обеих
+   default-тем: карточки без рамок (тень/оттенок вместо border),
+   pill-кнопки, плоский chrome, вкладки как в Google Chrome.
+   ============================================================ */
+html[data-theme^='default-'] .panel {
+  border-color: transparent;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+html[data-theme^='default-'] .btn {
+  border-radius: var(--radius-btn);
+  border-color: transparent;
+  letter-spacing: 0.05em;
+}
+html[data-theme^='default-'] .btn:hover {
+  border-color: transparent;
+  box-shadow: none;
+  background: var(--panel-hover);
+}
+html[data-theme^='default-'] .btn-primary {
+  background: var(--accent);
+}
+html[data-theme^='default-'] .btn-primary:hover {
+  background: var(--accent-hover);
+  filter: none;
+  box-shadow: var(--shadow-sm);
+}
+html[data-theme='default-dark'] .btn-primary,
+html[data-theme='default-dark'] .btn-primary:hover {
+  color: #0c1f1b;
+}
+html[data-theme='default-light'] .btn-primary,
+html[data-theme='default-light'] .btn-primary:hover {
+  color: #ffffff;
+}
+html[data-theme^='default-'] .btn-danger {
+  border-color: transparent;
+}
+/* Плоский chrome: топбар/сайдбар/полоса вкладок сливаются с фоном. */
+html[data-theme^='default-'] .topbar,
+html[data-theme^='default-'] .sidebar,
+html[data-theme^='default-'] .tab-strip {
+  background: var(--bg);
+}
+/* Вкладки как в Google Chrome: без рамок, скругление только сверху,
+   активная — цвет поверхности + мягкая тень, ховер — оттенок фона. */
+html[data-theme^='default-'] .tab-strip {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 8px 10px 0;
+  gap: 2px;
+}
+html[data-theme^='default-'] .tab {
+  border: none;
+  background: transparent;
+  border-radius: 12px 12px 0 0;
+  padding: 9px 14px;
+}
+html[data-theme^='default-'] .tab:hover {
+  background: var(--panel-hover);
+  color: var(--text);
+}
+html[data-theme^='default-'] .tab.active {
+  background: var(--panel);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+html[data-theme^='default-'] .tab-close {
+  border-radius: 50%;
+  padding: 2px 4px;
+}
+html[data-theme^='default-'] .tab-close:hover {
+  background: var(--panel-hover);
+  opacity: 1;
+}
+/* Dashboard-карточки: без рамок, 12px, elevation вместо обводки. */
+html[data-theme^='default-'] .banner,
+html[data-theme^='default-'] .cap,
+html[data-theme^='default-'] .tile,
+html[data-theme^='default-'] .ns-block {
+  border-color: transparent;
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+html[data-theme^='default-'] .banner,
+html[data-theme^='default-'] .ns-block {
+  background: var(--panel);
+}
+/* «Возможности сети» / MeshMeter — приподнятый блок: светлее фона баннера,
+   с ощутимой тенью и тонкой рамкой, чтобы края не сливались. */
+html[data-theme^='default-'] .cap {
+  background: var(--panel-2);
+  border-color: var(--border-subtle);
+  box-shadow: var(--shadow);
+}
+/* Кнопки «Запустить →» на плитках: pill в тёмной, ~10px в светлой (референс). */
+html[data-theme='default-dark'] .tile-launch {
+  border-radius: 999px;
+}
+html[data-theme='default-light'] .tile-launch {
+  border-radius: 10px;
+}
+/* Поиск на Dashboard — заметный «омнибокс»: приподнят, с мягким
+   акцентным кольцом; при фокусе кольцо усиливается. */
+html[data-theme^='default-'] .dash-search {
+  border-radius: 24px;
+  border: 1px solid var(--border-accent);
+  background: var(--bg-elevated);
+  box-shadow: 0 0 0 3px var(--accent-glow), var(--shadow-card);
+}
+html[data-theme^='default-'] .dash-search:hover {
+  border-color: var(--accent);
+}
+html[data-theme^='default-'] .dash-search:focus-within {
+  background: var(--panel);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow), var(--shadow);
+}
+/* Сайдбар в DEFAULT-темах: визуальная лёгкость — без жёсткой линии-разделителя,
+   активный пункт — мягкая бирюзовая заливка 10% со скруглением. */
+html[data-theme^='default-'] .sidebar {
+  border-right: none;
+}
+html[data-theme^='default-'] .nav-item {
+  border-radius: var(--radius-btn);
+}
+html[data-theme^='default-'] .nav-item:hover {
+  background: var(--panel-hover);
+}
+html[data-theme^='default-'] .nav-item.active {
+  background: transparent;
+  color: var(--accent);
+}
+
+/* Плавный переход тем (фоллбэк, когда View Transitions API недоступен):
+   на ~350мс всем элементам включается транзишен цветов. */
+html.theme-anim,
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    fill 0.25s ease,
+    stroke 0.25s ease !important;
+}
+/* View Transitions API: чуть медленнее дефолтного кросс-фейд. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.28s;
+}
+/* Магазин «Найти приложения»: кнопки менее круглые (референс ~10px),
+   вместо общих pill-кнопок DEFAULT-темы. */
+html[data-theme^='default-'] .discover .btn {
+  border-radius: 10px;
+}
+/* DEFAULT LIGHT по референсу Adminex: белый сайдбар/топбар на
+   серо-голубом фоне, карточки белые; поля ввода ~10px. Полоса вкладок
+   остаётся серой (--bg), чтобы активная белая вкладка читалась. */
+html[data-theme='default-light'] .topbar,
+html[data-theme='default-light'] .sidebar {
+  background: #ffffff;
+}
+html[data-theme='default-light'] input[type='text'],
+html[data-theme='default-light'] input[type='password'],
+html[data-theme='default-light'] input[type='number'],
+html[data-theme='default-light'] input[type='search'],
+html[data-theme='default-light'] textarea,
+html[data-theme='default-light'] select {
+  border-radius: 10px;
+}
+/* Светлая тема: строки «Возможностей сети» — белые карточки, а не тёмная
+   плёнка rgba(0,0,0,.18), рассчитанная на тёмные темы. */
+html[data-theme='default-light'] .cap-info-row {
+  background: #ffffff;
+}
+html[data-theme='default-light'] .cap-info-row.clickable:hover {
+  background: #f7f9fc;
+}
+/* Светлая тема: переключатель USER/DEV/GEEK — белый контейнер вместо серой
+   плёнки rgba(0,0,0,.28); активный режим — залитый чип с белым текстом. */
+html[data-theme='default-light'] .dash-modes {
+  background: #ffffff;
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html[data-theme='default-light'] .dm-badge:hover {
+  color: var(--text);
+  background: #f0f2f7;
+}
+html[data-theme='default-light'] .dm-badge.dm-user.active {
+  color: #ffffff;
+  background: #16a34a;
+  border-color: #16a34a;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+}
+html[data-theme='default-light'] .dm-badge.dm-dev.active {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+html[data-theme='default-light'] .dm-badge.dm-geek.active {
+  color: #ffffff;
+  background: #d97706;
+  border-color: #d97706;
+  box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
+}
+html[data-theme='default-light'] .dm-badge.active .dm-dot {
+  box-shadow: none;
+}
+/* Storages & Media: карточки не должны сливаться с фоном — в DEFAULT-темах
+   поверхность --surface + тень вместо прозрачного фона с бордером. */
+html[data-theme^='default-'] .st-card {
+  background: var(--surface);
+  border-color: transparent;
+  box-shadow: var(--shadow-card);
+  border-radius: var(--radius-card);
+}
+html[data-theme^='default-'] .st-card:hover {
+  border-color: var(--border-accent);
+}
+
+/* Нативное поведение: элемент и его содержимое не выделяются (Ctrl+A / drag). */
+.noselect,
+.noselect * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+.noselect input,
+.noselect textarea,
+.noselect [contenteditable='true'] {
+  user-select: text;
+  -webkit-user-select: text;
+}

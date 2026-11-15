@@ -1,0 +1,41 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# generated at build time by scripts/build-mail-bundle.cjs
+src-tauri/tauri.mail.gen.conf.json
+
+# oxid-mail бинари, копируемые build-oxid-mail.cjs перед tauri build
+src-tauri/oxid-mail
+src-tauri/oxid-mail.exe
+src-tauri/oxid-mail-*
+# ntfry-messenger бинари, копируемые build-messenger.cjs перед tauri build
+src-tauri/ntfry-messenger
+src-tauri/ntfry-messenger.exe
+src-tauri/ntfry-messenger-*
+# mycelium-tun (TUN-помощник системного VPN) + wintun.dll, копируются build-mycelium-tun.cjs
+src-tauri/mycelium-tun
+src-tauri/mycelium-tun.exe
+src-tauri/mycelium-tun-*
+src-tauri/wintun.dll
+

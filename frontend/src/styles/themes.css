@@ -1,0 +1,267 @@
+/*
+ * SmartNet // theme tokens
+ * Three skins driven entirely by CSS variables + [data-theme] on <html>.
+ *  - matte-dark    : deep tactical black, amber accent (default)
+ *  - readable-light: high-contrast light
+ *  - eink          : pure grayscale e-paper emulation
+ */
+
+:root,
+html[data-theme='matte-dark'] {
+  --bg: #0d0f12;
+  --app-bg: #0d0f12;
+  --bg-elevated: #0f1216;
+  --panel: #14171c;
+  --panel-solid: #14171c;
+  --panel-2: #181c22;
+  --panel-hover: #1c2128;
+  /* de-yellowed → XBTS neon-teal accent */
+  --accent: #2ee3c6;
+  --accent-hover: #5cf0d8;
+  --accent-soft: rgba(46, 227, 198, 0.12);
+  --accent-glow: rgba(46, 227, 198, 0.45);
+  --ui-accent: #2a2f37;
+  --status: #2ee3c6;
+  --secondary: #5c7894;
+  --text: #d1d5db;
+  --text-dim: #8893a3;
+  --danger: #cc4141;
+  --danger-soft: rgba(204, 65, 65, 0.12);
+  --success: #2ee3c6;
+  --border: #232831;
+  --border-subtle: #232831;
+  --border-accent: rgba(46, 227, 198, 0.4);
+  --radius: 2px;
+  --grid-line: transparent;
+  --shadow: 0 0 0 1px var(--border), 0 14px 40px -18px rgba(0, 0, 0, 0.9);
+  --shadow-sm: none;
+  --focus-ring: 0 0 0 2px var(--border-accent);
+  --scan: rgba(255, 255, 255, 0.015);
+  /* Card/button tokens (DEFAULT-темы переопределяют; остальные наследуют radius). */
+  --radius-card: var(--radius);
+  --radius-btn: var(--radius);
+  --shadow-card: var(--shadow-sm);
+  color-scheme: dark;
+}
+
+html[data-theme='readable-light'] {
+  --bg: #f3f4f6;
+  --bg-elevated: #eceef1;
+  --panel: #ffffff;
+  --panel-2: #f7f8fa;
+  --accent: #d9822b;
+  --accent-soft: rgba(217, 130, 43, 0.1);
+  --accent-glow: rgba(217, 130, 43, 0.25);
+  --secondary: #4b5563;
+  --text: #111827;
+  --text-dim: #6b7280;
+  --danger: #991b1b;
+  --danger-soft: rgba(153, 27, 27, 0.08);
+  --success: #15803d;
+  --border: #d6d9de;
+  --border-subtle: #e2e4e8;
+  --border-accent: rgba(107, 122, 138, 0.5);
+  --radius: 6px;
+  --app-bg: var(--bg);
+  --panel-hover: #eef0f3;
+  --accent-hover: #c4731f;
+  --ui-accent: #c2c7cf;
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.12);
+  --focus-ring: 0 0 0 2px rgba(107, 122, 138, 0.3);
+  --grid-line: rgba(75, 85, 99, 0.05);
+  --shadow: 0 0 0 1px var(--border), 0 10px 30px -16px rgba(15, 23, 42, 0.25);
+  --scan: rgba(0, 0, 0, 0.012);
+  color-scheme: light;
+}
+
+html[data-theme='eink'] {
+  --bg: #ffffff;
+  --bg-elevated: #f9f9f9;
+  --panel: #ffffff;
+  --panel-2: #f4f4f4;
+  --accent: #000000;
+  --accent-soft: #f0f0f0;
+  --accent-glow: transparent;
+  --secondary: #666666;
+  --text: #000000;
+  --text-dim: #666666;
+  --danger: #000000;
+  --danger-soft: #f0f0f0;
+  --success: #000000;
+  --border: #000000;
+  --border-subtle: #000000;
+  --border-accent: #000000;
+  --radius: 0px;
+  --app-bg: var(--bg);
+  --panel-hover: #f0f0f0;
+  --accent-hover: #000000;
+  --ui-accent: #000000;
+  --shadow-sm: none;
+  --focus-ring: 0 0 0 2px #000000;
+  --grid-line: transparent;
+  --shadow: none;
+  --scan: transparent;
+  color-scheme: light;
+}
+
+/* ============================================================
+   "FOCUS" — Metallic Edition (XBTS DEX inspired).
+   Dark graphite canvas with a subtle gradient shine, brushed-steel
+   surfaces, thin translucent borders and a steel→teal accent.
+   No yellow/amber anywhere — teal is the single call-to-action hue.
+   ============================================================ */
+html[data-theme='focus'] {
+  --bg: #0e0f11;
+  /* graphite canvas with a faint top-left shine */
+  --app-bg: radial-gradient(120% 90% at 28% -10%, #1b1e23 0%, #121315 42%, #0c0d0f 100%);
+  --bg-elevated: #161719;
+  --panel: #161719;
+  --panel-solid: #161719;
+  --panel-2: #1b1d20;
+  --panel-hover: #202327;
+  /* steel→teal accent */
+  --accent: #2fd6c0;
+  --accent-hover: #4ee5d2;
+  --accent-soft: rgba(47, 214, 192, 0.1);
+  --accent-glow: rgba(47, 214, 192, 0.28);
+  --ui-accent: #3a3d45;
+  --status: #2fd6c0;
+  --secondary: #98a0aa;
+  --text: #e8eaec;
+  --text-dim: #8b929c;
+  --danger: #d97070;
+  --danger-soft: rgba(217, 112, 112, 0.12);
+  --success: #2fd6c0;
+  --border: rgba(255, 255, 255, 0.05);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --border-accent: rgba(47, 214, 192, 0.4);
+  --radius: 6px;
+  --grid-line: transparent;
+  --shadow: 0 16px 44px -18px rgba(0, 0, 0, 0.7);
+  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.55);
+  --focus-ring: 0 0 0 2px rgba(47, 214, 192, 0.4);
+  --scan: transparent;
+  color-scheme: dark;
+}
+
+/* ============================================================
+   "NEON CYBER" — AEGIS-9 dark schematic. Charcoal-teal canvas, coral
+   primary action, teal status/online, magenta alert/busy. Neon borders +
+   glow shadows, sharp 4px corners. Standalone option.
+   ============================================================ */
+html[data-theme='neon'] {
+  --bg: #0b1013;
+  --app-bg: radial-gradient(120% 90% at 80% -10%, #11202a 0%, #0d161c 45%, #090d10 100%);
+  --bg-elevated: #121b22;
+  --panel: #111a20;
+  --panel-solid: #0f171d;
+  --panel-2: #16212a;
+  --panel-hover: #1b2832;
+  --accent: #ff7d6b;
+  --accent-hover: #ff9683;
+  --accent-soft: rgba(255, 125, 107, 0.13);
+  --accent-glow: rgba(255, 125, 107, 0.5);
+  --ui-accent: #25323c;
+  --status: #2fe0c8;
+  --secondary: #7d96a6;
+  --text: #e7eef3;
+  --text-dim: #8194a1;
+  --danger: #e85cf0;
+  --danger-soft: rgba(232, 92, 240, 0.14);
+  --success: #2fe0c8;
+  --border: rgba(47, 224, 200, 0.16);
+  --border-subtle: rgba(47, 224, 200, 0.1);
+  --border-accent: rgba(255, 125, 107, 0.55);
+  --radius: 4px;
+  --grid-line: transparent;
+  --teal-glow: rgba(47, 224, 200, 0.45);
+  --magenta-glow: rgba(232, 92, 240, 0.5);
+  --shadow: 0 14px 40px -16px rgba(0, 0, 0, 0.8);
+  --shadow-sm: 0 6px 18px -10px rgba(0, 0, 0, 0.6);
+  --focus-ring: 0 0 0 2px rgba(255, 125, 107, 0.5);
+  --scan: transparent;
+  color-scheme: dark;
+}
+
+/* ============================================================
+   "DEFAULT DARK" — Google-стиль (Material-like). Глубокий серый
+   вместо чёрного, карточки разделяются оттенком фона + мягкой тенью,
+   без жёстких рамок. Радиусы: 12px карточки, 20px кнопки (pill).
+   Бирюзовый бренд-акцент — только CTA и активные элементы.
+   ============================================================ */
+html[data-theme='default-dark'] {
+  --bg: #202124;
+  --app-bg: #202124;
+  --bg-elevated: #26272b;
+  --panel: #2d2e31;
+  --panel-solid: #2d2e31;
+  --panel-2: #323337;
+  --panel-hover: #38393d;
+  --surface: #2d2e31;
+  --accent: #2ee3c6;
+  --accent-hover: #5cf0d8;
+  --accent-soft: rgba(46, 227, 198, 0.1);
+  --accent-glow: rgba(46, 227, 198, 0.16);
+  --ui-accent: #3c4043;
+  --status: #2ee3c6;
+  --secondary: #9aa0a6;
+  --text: #e8eaed;
+  --text-dim: #9aa0a6;
+  --danger: #f28b82;
+  --danger-soft: rgba(242, 139, 130, 0.12);
+  --success: #81c995;
+  --border: transparent;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-accent: rgba(46, 227, 198, 0.35);
+  --radius: 12px;
+  --radius-card: 12px;
+  --radius-btn: 20px;
+  --grid-line: transparent;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+  --focus-ring: 0 0 0 2px rgba(46, 227, 198, 0.35);
+  --scan: transparent;
+  color-scheme: dark;
+}
+
+/* ============================================================
+   "DEFAULT LIGHT" — Google-стиль. Фон не чисто белый (#F8F9FA),
+   карточки чисто белые с едва заметной тенью 0 1px 3px.
+   Акцент — затемнённый бренд-бирюзовый (контраст на белом).
+   ============================================================ */
+html[data-theme='default-light'] {
+  --bg: #f0f2f7;
+  --app-bg: #f0f2f7;
+  --bg-elevated: #ffffff;
+  --panel: #ffffff;
+  --panel-solid: #ffffff;
+  --panel-2: #f4f6fa;
+  --panel-hover: #eef1f7;
+  --surface: #ffffff;
+  --accent: #0e9384;
+  --accent-hover: #0b7d70;
+  --accent-soft: rgba(14, 147, 132, 0.1);
+  --accent-glow: rgba(14, 147, 132, 0.14);
+  --ui-accent: #dfe3ec;
+  --status: #0e9384;
+  --secondary: #5f6368;
+  --text: #202124;
+  --text-dim: #5f6368;
+  --danger: #d93025;
+  --danger-soft: rgba(217, 48, 37, 0.08);
+  --success: #188038;
+  --border: transparent;
+  --border-subtle: rgba(30, 41, 59, 0.09);
+  --border-accent: rgba(14, 147, 132, 0.4);
+  --radius: 12px;
+  --radius-card: 12px;
+  --radius-btn: 10px;
+  --grid-line: transparent;
+  --shadow: 0 2px 4px rgba(30, 41, 59, 0.05), 0 10px 24px rgba(30, 41, 59, 0.07);
+  --shadow-sm: 0 1px 3px rgba(30, 41, 59, 0.08);
+  --shadow-card: 0 1px 3px rgba(30, 41, 59, 0.08);
+  --focus-ring: 0 0 0 2px rgba(14, 147, 132, 0.3);
+  --scan: transparent;
+  color-scheme: light;
+}
