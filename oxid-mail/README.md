@@ -107,7 +107,7 @@ the only supported path for Gmail is **app password** (App Password) according t
 at myaccount.google.com/apppasswords. The OAuth core (XOAUTH2, refresh_token)
 remains in the code (`oauth.rs`, command `oauth_gmail_sign_in`) and can be restored with a single button in the UI.
 
-## Server-side flags
+## Server-side flags 
 
 Read state (`\Seen`) and stars (`\Flagged`) are pushed to the IMAP server when changed;
 delete from trash deletes the email on the server as well (`+\Deleted`, EXPUNGE).
