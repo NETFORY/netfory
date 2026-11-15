@@ -1,0 +1,45 @@
+# /etc/systemd/system/pq-web.service — NETFORY egress-туннель (pq-web)
+# Установка: cp target/release/pq-web /usr/local/bin/ && systemctl enable --now pq-web
+[Unit]
+Description=PQ Web — NETFORY https egress tunnel over Iroh QUIC
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+DynamicUser=yes
+StateDirectory=pq-web
+# Ключ узла хранится в /var/lib/pq-web/key.hex (создаётся при первом старте)
+Environment=PQ_WEB_KEY=/var/lib/pq-web/key.hex
+Environment=PQ_WEB_BIND=0.0.0.0:7843
+# Свои relay через запятую; пусто — публичные n0
+Environment=PQ_WEB_RELAYS=https://relay-fsn7.sth.cx
+Environment=PQ_WEB_ALLOW=/etc/pq-web/bundles.json
+Environment=PQ_WEB_REGION=NL
+# саморегистрация на трекерах (пусто = публичные трекеры NETFORY); PQ_WEB_NO_ANNOUNCE=1 — выключить
+#Environment=PQ_WEB_TRACKERS=http://159.69.188.60:7374,http://91.99.119.119:7374
+Environment=PQ_WEB_METRICS=127.0.0.1:9797
+# IPv6-egress (v0.4.0): auto|prefer6|prefer4|only6|only4; префикс — случайный исходящий v6 на каждый CONNECT
+# (нужен sysctl net.ipv6.ip_nonlocal_bind=1 + `ip -6 route add local <prefix> dev lo`, см. README)
+Environment=PQ_WEB_IP_MODE=auto
+#Environment=PQ_WEB_EGRESS_V6_PREFIX=2a01:4f8:c013:ab91::/64
+# Релей Mycelium (v0.6.0): mushroom-цепочки NETFORY на этом же узле; клиенты подхватят его с трекера
+Environment=PQ_WEB_MYCELIUM=1
+Environment=PQ_WEB_MYCELIUM_KBPS=4096
+Environment=PQ_WEB_MYCELIUM_MAX_CIRCUITS=256
+Environment=PQ_WEB_KBPS=20000
+Environment=PQ_WEB_MAX_STREAMS=64
+Environment=RUST_LOG=pq_web=info,iroh=warn
+ExecStart=/usr/local/bin/pq-web serve
+Restart=always
+RestartSec=3
+LimitNOFILE=65536
+MemoryMax=768M
+TasksMax=4096
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+
+[Install]
+WantedBy=multi-user.target

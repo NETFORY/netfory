@@ -1,0 +1,32 @@
+[package]
+name = "pq-web"
+version = "0.6.1"
+edition = "2021"
+description = "PQ Web — egress-туннель NETFORY для https://-сайтов поверх Iroh QUIC (CONNECT без MITM)."
+license = "MIT"
+
+# lib + bin: библиотека нужна, чтобы позже встроить тот же сервис в узлы SmartHoldem.
+[lib]
+name = "pq_web"
+path = "src/lib.rs"
+
+[[bin]]
+name = "pq-web"
+path = "src/main.rs"
+
+[dependencies]
+iroh = "1"
+iroh-relay = "1"
+iroh-gossip = "0.101"
+# Релей Mycelium (NIP-1) на том же EndpointId — `pq-web serve --mycelium`
+mycelium = { path = "../../mycelium" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal", "net", "io-util", "time", "sync", "fs"] }
+clap = { version = "4", features = ["derive", "env"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+hex = "0.4"
+rand = "0.10"
+ureq = { version = "2", features = ["json"] }

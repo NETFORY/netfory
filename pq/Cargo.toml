@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = ["pq-relay", "pq-web"]
+
+# Лендинг «NETFORY Relay»: в iroh-relay текст страницы `/` захардкожен (INDEX),
+# а request_handler приватный — поэтому используется локальная копия 1.0.0 с патчем.
+# Патч действует на весь workspace (pq-web тоже видит iroh-relay через iroh).
+[patch.crates-io]
+iroh-relay = { path = "pq-relay/vendor/iroh-relay" }
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = true
