@@ -1,0 +1,24 @@
+[package]
+name = "oxid-mail"
+version = "0.8.3"
+edition = "2021"
+description = "Oxid Mail — защищённый почтовый клиент SmartNet (standalone Tauri)"
+
+[lib]
+name = "oxid_mail_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-notification = "2"
+tauri-plugin-dialog = "2"
+mail-core = { path = "../crates/mail-core" }
+mail-store = { path = "../crates/mail-store" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+base64 = "0.22"
+open = "5"
+tokio = { version = "1", features = ["sync"] }

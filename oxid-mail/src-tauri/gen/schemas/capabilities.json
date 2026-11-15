@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Oxid Mail default capability — main window only.","local":true,"windows":["main"],"permissions":["core:default","notification:default"]}}

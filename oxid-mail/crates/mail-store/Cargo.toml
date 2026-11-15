@@ -1,0 +1,18 @@
+[package]
+name = "mail-store"
+version = "0.8.0"
+edition = "2021"
+description = "Oxid Mail encrypted+compressed local store (BIP-39 -> HKDF -> XChaCha20-Poly1305 + zstd, sled)"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+sled = "0.34"
+zstd = "0.13"
+chacha20poly1305 = "0.10"
+hkdf = "0.12"
+rand = "0.8"
+
+[dev-dependencies]
+tempfile = "3"

@@ -1,0 +1,15 @@
+[package]
+name = "oxid-bridge"
+version = "0.8.0"
+edition = "2021"
+description = "Oxid Mail dev/web bridge: same command surface as the future Tauri backend, over HTTP"
+
+[dependencies]
+mail-core = { path = "../mail-core" }
+mail-store = { path = "../mail-store" }
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+axum = "0.7"
+tower-http = { version = "0.5", features = ["cors"] }
+base64 = "0.22"
+serde = { workspace = true }
+serde_json = { workspace = true }
