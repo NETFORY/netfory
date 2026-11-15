@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AI Demo — Netfory AI Compute</title>
+<style>
+  :root {
+    --bg: #070d15;
+    --card: rgba(13, 20, 30, 0.85);
+    --line: rgba(148, 163, 184, 0.16);
+    --txt: #e2e8f0;
+    --dim: #64748b;
+    --cyan: #22d3ee;
+    --green: #34d399;
+    --red: #f87171;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--txt);
+    font: 14px/1.6 ui-sans-serif, system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 32px 18px 60px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; }
+  h1 { font-size: 22px; letter-spacing: 1px; }
+  h1 b { color: var(--cyan); }
+  .sub { color: var(--dim); font-size: 12.5px; margin-bottom: 22px; }
+  .badge {
+    font-size: 10px; font-weight: 800; letter-spacing: 1.2px;
+    border-radius: 4px; padding: 2px 8px;
+  }
+  .badge.ok { color: #0a1018; background: var(--green); }
+  .badge.no { color: #0a1018; background: var(--red); }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  }
+  textarea {
+    width: 100%; min-height: 84px; resize: vertical;
+    background: rgba(2, 8, 16, 0.7); color: var(--txt);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 13px; font: 13px/1.5 inherit; outline: none;
+  }
+  textarea:focus { border-color: rgba(34, 211, 238, 0.5); }
+  .row { display: flex; gap: 10px; margin-top: 12px; align-items: center; flex-wrap: wrap; }
+  input {
+    background: rgba(2, 8, 16, 0.7); color: var(--txt);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 8px 14px; font: 12px ui-monospace, monospace; outline: none;
+  }
+  #model { width: 190px; }
+  #maxTok { width: 90px; }
+  button {
+    border: none; border-radius: 999px; font-weight: 700; font-size: 12.5px;
+    letter-spacing: 0.5px; padding: 9px 24px; cursor: pointer;
+    transition: transform 0.15s, opacity 0.15s;
+  }
+  button:hover { transform: translateY(-1px); }
+  button:disabled { opacity: 0.35; cursor: default; transform: none; }
+  #go { background: var(--cyan); color: #0a1018; }
+  #stop { background: rgba(248, 113, 113, 0.12); color: var(--red); border: 1px solid rgba(248, 113, 113, 0.4); display: none; }
+  #out {
+    white-space: pre-wrap; word-break: break-word;
+    font: 12.5px/1.65 ui-monospace, monospace;
+    background: rgba(2, 8, 16, 0.7); border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: 10px; padding: 14px; min-height: 60px; max-height: 380px; overflow-y: auto;
+  }
+  .cursor { color: var(--green); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  #meta { margin-top: 8px; font: 10.5px ui-monospace, monospace; color: var(--dim); }
+  #err { margin-top: 8px; font-size: 12px; color: var(--red); }
+  h2 { font-size: 12px; letter-spacing: 2px; color: var(--dim); margin-bottom: 12px; }
+  pre.code {
+    background: rgba(2, 8, 16, 0.7); border: 1px solid var(--line);
+    border-radius: 10px; padding: 14px; overflow-x: auto;
+    font: 11.5px/1.6 ui-monospace, monospace; color: #a5f3fc;
+  }
+  .k { color: #f0abfc; } .s { color: #86efac; } .c { color: #475569; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><b>AI Demo</b> · Netfory AI Compute</h1>
+    <span id="feat" class="badge no">AI: …</span>
+  </header>
+  <p class="sub">Пример dApp: стриминговая генерация текста на децентрализованном AI-суперкомпьютере через <code>window.smartholdem.useAI()</code>. Исполнителя выбирает диспетчер трекера, токены прилетают в реальном времени.</p>
+
+  <div class="card">
+    <textarea id="prompt" placeholder="Спроси что-нибудь у сети… (Ctrl+Enter — отправить)">Объясни в двух абзацах, что такое pipeline parallelism и зачем он нужен для больших LLM.</textarea>
+    <div class="row">
+      <input id="model" placeholder="модель (опц.)" />
+      <input id="maxTok" type="number" min="1" max="2048" value="256" title="maxTokens" />
+      <button id="go">Сгенерировать</button>
+      <button id="stop">Стоп</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div id="out"><span class="c">// ответ появится здесь</span></div>
+    <div id="meta"></div>
+    <div id="err"></div>
+  </div>
+
+  <div class="card">
+    <h2>КАК ЭТО РАБОТАЕТ</h2>
+    <pre class="code"><span class="k">const</span> job = window.smartholdem.<span class="k">useAI</span>({
+  prompt: <span class="s">'Твой вопрос…'</span>,
+  model: <span class="s">'tinyllama'</span>,      <span class="c">// опционально: alias модели</span>
+  maxTokens: <span class="s">256</span>,           <span class="c">// опционально</span>
+  onToken: (t) =&gt; out.textContent += t,  <span class="c">// стриминг</span>
+})
+<span class="k">const</span> { text, node, ms } = <span class="k">await</span> job.done  <span class="c">// финал</span>
+job.<span class="k">cancel</span>()                    <span class="c">// отмена в любой момент</span>
+<span class="c">// доступность: window.__SMARTNET__.features.ai === true</span></pre>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var out = $('out'), meta = $('meta'), err = $('err');
+  var go = $('go'), stop = $('stop');
+  var job = null;
+
+  function aiReady() {
+    return !!(window.smartholdem && typeof window.smartholdem.useAI === 'function');
+  }
+  // мост инжектится асинхронно — проверяем с небольшим ретраем
+  var tries = 0;
+  (function checkFeature() {
+    var f = $('feat');
+    if (aiReady()) { f.textContent = 'AI: доступен'; f.className = 'badge ok'; return; }
+    if (++tries < 20) { setTimeout(checkFeature, 250); return; }
+    f.textContent = 'AI: недоступен';
+  })();
+
+  function setBusy(b) {
+    go.disabled = b;
+    go.style.display = b ? 'none' : '';
+    stop.style.display = b ? '' : 'none';
+  }
+
+  function generate() {
+    if (!aiReady()) { err.textContent = 'Мост smartholdem недоступен — откройте dApp внутри NETFORY.'; return; }
+    var p = $('prompt').value.trim();
+    if (!p || job) return;
+    err.textContent = ''; meta.textContent = '';
+    out.innerHTML = '<span class="cursor">▌</span>';
+    var text = '';
+    setBusy(true);
+    job = window.smartholdem.useAI({
+      prompt: p,
+      model: $('model').value.trim() || undefined,
+      maxTokens: Math.max(1, Math.min(2048, parseInt($('maxTok').value, 10) || 256)),
+      onToken: function (t) {
+        text += t;
+        out.textContent = text;
+        out.innerHTML = out.innerHTML + '<span class="cursor">▌</span>';
+        out.scrollTop = out.scrollHeight;
+      }
+    });
+    job.done.then(function (r) {
+      out.textContent = (r && r.text) || text || '(пусто)';
+      if (r) meta.textContent = r.node + ' · ' + r.ms + ' ms';
+    }).catch(function (e) {
+      err.textContent = String((e && e.message) || e);
+      if (text) out.textContent = text; else out.innerHTML = '<span class="c">// ошибка</span>';
+    }).finally(function () { job = null; setBusy(false); });
+  }
+
+  go.addEventListener('click', generate);
+  stop.addEventListener('click', function () { if (job) job.cancel(); });
+  $('prompt').addEventListener('keydown', function (e) {
+    if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); generate(); }
+  });
+})();
+</script>
+</body>
+</html>
