@@ -1,0 +1,215 @@
+:root,
+html[data-theme='dark'] {
+  /* DEFAULT DARK — токены основного SmartNet-клиента */
+  --bg: #202124;
+  --panel: #2d2e31;
+  --input-bg: #26272b;
+  --border: rgba(255, 255, 255, 0.09);
+  --accent: #2ee3c6;
+  --accent-dim: #1fae98;
+  --btn-text: #041016;
+  --text: #e8eaed;
+  --dim: #9aa0a6;
+  --danger: #f28b82;
+  --ok: #81c995;
+  color-scheme: dark;
+}
+html[data-theme='light'] {
+  /* DEFAULT LIGHT — токены основного SmartNet-клиента */
+  --bg: #f0f2f7;
+  --panel: #ffffff;
+  --input-bg: #f4f6fa;
+  --border: rgba(30, 41, 59, 0.14);
+  --accent: #0e9384;
+  --accent-dim: #0b7d70;
+  --btn-text: #ffffff;
+  --text: #202124;
+  --dim: #5f6368;
+  --danger: #d93025;
+  --ok: #188038;
+  color-scheme: light;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body, #app { height: 100%; }
+body { overflow: hidden; }
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); }
+::-webkit-scrollbar-track { background: transparent; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: "Segoe UI", system-ui, sans-serif; font-size: 14px;
+  user-select: none;
+}
+#app { display: flex; flex-direction: column; padding: 12px 16px; gap: 10px; }
+.top { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 20px; font-weight: 800; letter-spacing: 0.06em; }
+.logo span { color: var(--accent); }
+.lang-btn {
+  background: transparent; border: 1px solid var(--border); color: var(--dim);
+  border-radius: 6px; padding: 3px 9px; font-size: 11px; cursor: pointer; margin-left: 4px;
+}
+.lang-btn.active { color: var(--accent); border-color: var(--accent-dim); }
+.tabs { display: flex; gap: 6px; }
+.tab {
+  flex: 1; background: var(--panel); border: 1px solid var(--border); color: var(--dim);
+  padding: 8px 0; border-radius: 8px; font-size: 11px; letter-spacing: 0.07em;
+  text-transform: uppercase; cursor: pointer; transition: color .15s, border-color .15s;
+}
+.tab.active { color: var(--accent); border-color: var(--accent-dim); }
+.panel { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; min-height: 0; padding-right: 2px; }
+.dropzone {
+  border: 2px dashed var(--border); border-radius: 12px; padding: 16px 10px;
+  text-align: center; transition: border-color .15s, background .15s;
+}
+.dropzone.hover { border-color: var(--accent); background: rgba(0,229,255,0.05); }
+.dz-icon { font-size: 22px; color: var(--accent-dim); }
+.dz-text { margin-top: 4px; font-size: 13px; }
+.dz-sub { margin-top: 2px; font-size: 11px; color: var(--dim); }
+.row { display: flex; gap: 8px; align-items: center; }
+.col { display: flex; flex-direction: column; gap: 8px; }
+.opts { gap: 18px; font-size: 12px; color: var(--dim); flex-wrap: wrap; }
+.opts label, .chk { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+input[type="text"], textarea, select {
+  width: 100%; background: var(--input-bg); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); padding: 9px 10px; font-size: 12px; outline: none;
+  font-family: Consolas, monospace; user-select: text;
+}
+input:focus, textarea:focus, select:focus { border-color: var(--accent-dim); }
+textarea { resize: vertical; min-height: 48px; }
+/* текст/ссылка на устройство — блок под зоной перетаскивания */
+.clip-block { margin-top: 10px; }
+.clip-ta { width: 100%; min-height: 52px; max-height: 120px; font-size: 13px; }
+.btn {
+  border: none; border-radius: 8px; padding: 9px 16px; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.06em; cursor: pointer; white-space: nowrap;
+  transition: filter .15s, transform .1s;
+}
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .5; cursor: default; }
+.btn.primary { background: linear-gradient(135deg, var(--accent-dim), var(--accent)); color: var(--btn-text); }
+.btn.primary:hover:not(:disabled) { filter: brightness(1.12); }
+.btn.danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+.btn.ghost { background: transparent; border: 1px solid var(--border); color: var(--accent); }
+.ticket-box { display: flex; flex-direction: column; gap: 6px; }
+.tk-label { font-size: 10px; letter-spacing: 0.12em; color: var(--accent); }
+.tk-text { min-height: 44px; max-height: 64px; word-break: break-all; font-size: 11px; }
+.qr { display: flex; justify-content: center; padding: 4px 0; }
+.link { cursor: pointer; }
+.link b { color: var(--accent); border-bottom: 1px dotted var(--accent-dim); }
+.dir-up { color: var(--accent); }
+.dir-down { color: var(--ok); }
+.qr-on { border-color: var(--accent); }
+.qr :deep(svg), .qr svg { border-radius: 8px; }
+.status { font-size: 11px; color: var(--dim); word-break: break-word; }
+.status:empty { display: none; }
+.status.err { color: var(--danger); }
+.status.ok { color: var(--ok); }
+.fp {
+  font-family: Consolas, monospace; font-size: 11px; color: var(--accent);
+  border: 1px dashed var(--accent-dim); border-radius: 8px; padding: 5px 8px;
+}
+.prog { display: flex; flex-direction: column; gap: 5px; }
+.prog-bar { height: 8px; background: var(--input-bg); border-radius: 5px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent-dim), var(--accent)); transition: width .2s; }
+.prog-text { font-size: 11px; color: var(--dim); font-family: Consolas, monospace; }
+.offer { border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 9px; }
+.offer-title { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+.offer-meta { font-size: 13px; line-height: 1.5; }
+.set-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--dim); }
+.file-list { font-size: 11px; color: var(--dim); font-family: Consolas, monospace; max-height: 66px; overflow-y: auto; }
+.hist-item { display: flex; justify-content: space-between; gap: 8px; border-bottom: 1px solid var(--border); padding: 8px 2px; font-size: 12px; }
+.undo-bar { display: flex; align-items: center; gap: 8px; border: 1px dashed var(--border); border-radius: 10px; padding: 6px 10px; font-size: 12px; color: var(--dim); }
+.hist-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hist-dim { color: var(--dim); font-size: 11px; }
+.badge { font-size: 10px; border-radius: 5px; padding: 2px 7px; letter-spacing: .05em; text-transform: uppercase; }
+.badge.done { color: var(--ok); border: 1px solid var(--ok); }
+.badge.error { color: var(--danger); border: 1px solid var(--danger); }
+.badge.paused { color: #f0b429; border: 1px solid #f0b429; }
+.badge.cancelled { color: var(--dim); border: 1px solid var(--dim); }
+.btn-sm { padding: 4px 10px; font-size: 11px; }
+.transfer { border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+.hidden { display: none !important; }
+
+/* ---------- Компакт-режим (узкие экраны / Android): нижняя навигация ---------- */
+.tab-ico { display: none; }
+@media (max-width: 520px) {
+  #app { padding: 8px 10px calc(84px + env(safe-area-inset-bottom)); gap: 8px; }
+  .logo { font-size: 17px; }
+  .tabs {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    padding: 5px 8px calc(5px + env(safe-area-inset-bottom));
+    background: var(--panel); border-top: 1px solid var(--border);
+    gap: 4px; margin: 0;
+  }
+  .tab {
+    display: flex; flex-direction: column; align-items: center; gap: 1px;
+    background: transparent; border: none; padding: 4px 0;
+    font-size: 9px; letter-spacing: 0.03em;
+  }
+  .tab-ico { display: block; font-size: 17px; line-height: 1; }
+  .dropzone { padding: 12px 8px; }
+  .dz-icon { font-size: 18px; }
+  .row { flex-wrap: wrap; }
+  .btn { padding: 8px 12px; flex: 1; }
+  .btn-sm { flex: 0; }
+  .hist-item { flex-wrap: wrap; }
+  .transfer .row { flex-wrap: nowrap; }
+}
+
+/* Android edge-to-edge: контент не должен залезать под строку состояния */
+html.is-android #app {
+  padding-top: max(env(safe-area-inset-top, 0px), 30px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+/* узкие экраны: нижняя навигация фиксирована — оставляем место под ней */
+@media (max-width: 520px) {
+  html.is-android #app {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* кнопка ОТПРАВИТЬ в состоянии подготовки — мягкая пульсация */
+.btn.preparing { animation: nd-pulse 1.2s ease-in-out infinite; }
+@keyframes nd-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+/* ---------- QR-сканер (Android): камера видна сквозь прозрачный webview ---------- */
+html.qr-scanning,
+html.qr-scanning body,
+html.qr-scanning #app { background: transparent !important; }
+html.qr-scanning #app > * { visibility: hidden; }
+.qr-scan-overlay {
+  visibility: visible; position: fixed; inset: 0; z-index: 999;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: calc(28px + env(safe-area-inset-top, 0px)) 20px calc(44px + env(safe-area-inset-bottom, 0px));
+  background: transparent; pointer-events: none;
+}
+.qr-scan-overlay > * { pointer-events: auto; }
+/* фикс: мобильное правило .btn { flex: 1 } растягивало кнопку по высоте колонки */
+.qr-scan-overlay .btn {
+  flex: 0 0 auto !important;
+  align-self: center;
+  padding: 10px 28px;
+}
+.qr-scan-hint {
+  color: #fff; font-size: 15px; text-align: center;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
+}
+.qr-scan-frame {
+  width: min(70vw, 280px); aspect-ratio: 1 / 1;
+  border: 2px solid rgba(255, 255, 255, 0.9); border-radius: 16px;
+  box-shadow: 0 0 0 4000px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+/* индикатор онлайн-статуса доверенных устройств */
+.dot {
+  display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  background: var(--border); margin-right: 7px; vertical-align: middle;
+  transition: background-color 0.3s;
+}
+.dot.on { background: #3ddc84; box-shadow: 0 0 6px rgba(61, 220, 132, 0.6); }
+.dot.checking { animation: nd-pulse 1.2s ease-in-out infinite; }

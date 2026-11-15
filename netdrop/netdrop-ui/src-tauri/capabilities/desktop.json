@@ -1,0 +1,8 @@
+{
+  "$schema": "https://schema.tauri.app/reference/acl/capability.json",
+  "identifier": "desktop",
+  "description": "netdrop desktop-only capabilities",
+  "windows": ["main"],
+  "platforms": ["windows", "linux", "macOS"],
+  "permissions": ["autostart:default"]
+}

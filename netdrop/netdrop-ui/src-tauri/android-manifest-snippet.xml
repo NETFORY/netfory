@@ -1,0 +1,32 @@
+<!--
+  ВНИМАНИЕ: не вставляйте этот файл в AndroidManifest.xml целиком!
+  Tauri-плагины (deep-link, fs) при сборке ТЕКСТОВО вставляют свои
+  AUTO-GENERATED маркеры в манифест; если инструкция-комментарий
+  содержит примеры тегов, маркер может попасть ВНУТРЬ комментария,
+  и XML станет невалидным (Error parsing AndroidManifest.xml).
+
+  ПРОЩЕ ВСЕГО: возьмите готовый полный манифест
+  gen-android-AndroidManifest.xml.ready и замените им
+  src-tauri/gen/android/app/src/main/AndroidManifest.xml
+  после каждого tauri android init.
+
+  Если правите вручную, скопируйте в activity MainActivity два блока
+  ниже (рядом с LAUNCHER intent-filter), а разрешение уведомлений
+  добавьте на уровень manifest, рядом с INTERNET:
+  uses-permission android.permission.POST_NOTIFICATIONS
+-->
+
+<!-- netdrop в системном меню Поделиться -->
+<intent-filter>
+    <action android:name="android.intent.action.SEND" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="*/*" />
+</intent-filter>
+
+<!-- deep-link: ссылки netdrop открываются в приложении -->
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data android:scheme="netdrop" />
+</intent-filter>
