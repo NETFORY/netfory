@@ -1,0 +1,25 @@
+# /etc/systemd/system/pq-relay.service — режим B (nginx на 443 + QUIC/QAD из PEM certbot)
+[Unit]
+Description=SmartNet Relay (n1-relay, HTTP behind nginx + QUIC/QAD)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pq-relay
+Group=ssl-cert
+Environment=PQ_RELAY_HOST=0.0.0.0
+Environment=PQ_RELAY_PORT=3340
+Environment=PQ_RELAY_QUIC_PORT=7842
+Environment=PQ_RELAY_TLS_CERT=/etc/letsencrypt/live/relay-fsn7.sth.cx/fullchain.pem
+Environment=PQ_RELAY_TLS_KEY=/etc/letsencrypt/live/relay-fsn7.sth.cx/privkey.pem
+Environment=RUST_LOG=pq_relay=info,iroh_relay=info
+ExecStart=/opt/pq-relay/pq-relay
+NoNewPrivileges=true
+# fd: каждый клиент релея = ≥1 дескриптор; дефолтные 1024 → EMFILE и «зависание»
+LimitNOFILE=65535
+Restart=always
+RestartSec=3
+# certbot renew --deploy-hook "systemctl restart pq-relay"
+
+[Install]
+WantedBy=multi-user.target

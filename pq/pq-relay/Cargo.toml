@@ -1,0 +1,19 @@
+[package]
+name = "pq-relay"
+version = "0.2.1"
+edition = "2021"
+description = "PQ Relay — self-hostable iroh relay for the NETFORY / SmartNet mesh (n1-relay)."
+
+[[bin]]
+name = "pq-relay"
+path = "src/main.rs"
+
+[dependencies]
+iroh-relay = { version = "1", features = ["server"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+rustls-pemfile = "2"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "signal"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+libc = "0.2"
+
