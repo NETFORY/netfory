@@ -12,7 +12,7 @@ In the relay config, the domain is specified **instead of** `server_name` in ngi
 TLS-ALPN-01 challenge itself, stores the certificate in `PQ_RELAY_ACME_CACHE`, and renews it automatically (about 30 days before expiry).
 Clients continue to use `https://relay-fsn7.sth.cx` - the URL does not change, and `N1_RELAYS` in sth-core and NETFORY settings do not need to be touched.
 
-Requirements: 443/tcp and 7842/udp are open in the external firewall; nginx (or anything else) **does not** listen on  443 on this IP; binding to 443 requires either running as root or `AmbientCapabilities=CAP_NET_BIND_SERVICE` in systemd (below).
+Requirements: 443/tcp and 7842/udp are open in the external firewall; nginx (or anything else) **does not** listen on 443 on this IP; binding to 443 requires either running as root or `AmbientCapabilities=CAP_NET_BIND_SERVICE` in systemd (below).
 
 ## Cargo.toml
 
