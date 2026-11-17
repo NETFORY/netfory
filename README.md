@@ -95,16 +95,16 @@ yarn tauri:icons  # regenerate icons from src-tauri/icons/icon.png (1024x1024)
 > Requires the Rust toolchain + Tauri v2 prerequisites installed locally.
 
 ## Crypto
-- BIP-39 mnemonic (12 words) → BIP-44 HD at `m/44'/111'/N'/0/0` on secp256k1.
-- Address: `base58check( 0x3F ‖ RIPEMD160(compressedPubKey) )` → `S...`.
+- BIP-39 mnemonic (12 words) -> BIP-44 HD at `m/44'/111'/N'/0/0` on secp256k1.
+- Address: `base58check( 0x3F || RIPEMD160(compressedPubKey) )` -> `S...`.
 - Mnemonic AES-sealed with `SHA-256(PIN)`; raw PIN never persisted.
 
 ## Environment detection
 ```ts
 const isTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window
 ```
-- Tauri → Rust IPC (Sled DB), decrypted seed kept in Rust process memory.
-- Web → localStorage (`sth_vault`) + sessionStorage (`sth_session_pin`, survives F5).
+- Tauri -> Rust IPC (Sled DB), decrypted seed kept in Rust process memory.
+- Web -> localStorage (`sth_vault`) + sessionStorage (`sth_session_pin`, survives F5).
 
 ## Layout
 `src/lib/crypto.ts` · `src/lib/bridge.ts` · `src/store/{auth,ui}.ts` ·
@@ -143,13 +143,13 @@ under the tab UI (instead of iframes used by the web fallback)?
 
 ## content.json verification (ZeroNet trust)
 On open, `sth://<id>` is verified before it is trusted:
-1. **files re-hashed on disk** (SHA-256) → recomputed Blake3 merkle must match
+1. **files re-hashed on disk** (SHA-256) -> recomputed Blake3 merkle must match
    the manifest (native `verify_app`);
 2. `id` must equal the SmartHoldem address derived from the signing **publicKey**
    (the URL *is* the key);
 3. the ECDSA signature over `sha256(id|name|merkle)` must be valid.
 A `✓ verified` / `⚠ unverified` badge is shown on the tab. Web fallback verifies
-the stored manifest signature (`lib/crypto.ts → verifyAppManifest`).
+the stored manifest signature (`lib/crypto.ts -> verifyAppManifest`).
 
 ## P2P LAN discovery (mDNS) + iroh-blobs transit
 `start_discovery` / `discovered_peers` / `stop_discovery` register this node on
@@ -160,15 +160,15 @@ pairs in TXT) and browse the LAN for other SmartNet nodes.
   aggregates peer apps **deduplicated by id**, showing title, description
   (fallback `no title` / `no description`) and a **seeds** count = number of
   distinct peers serving that app. An **Install** button is also in
-  Settings → P2P DISCOVERY.
+  Settings -> P2P DISCOVERY.
 - **Real transit (`iroh-blobs`)** is **OPTIONAL, behind the Cargo `p2p` feature**
   (kept off by default so the desktop build always compiles while iroh's API
   stabilises). Build with `cargo build --features p2p` (or add `"p2p"` to
   `[features].default` in `src-tauri/Cargo.toml`). On discovery each local dApp
-  folder is seeded into an `FsStore` → its collection hash announced; `install_app`
+  folder is seeded into an `FsStore` -> its collection hash announced; `install_app`
   downloads the collection from a serving node and exports it to
-  `data/dapps/<id>`, then `verify_app` proves integrity → `✓` badge.
-  ⚠️ Pin a mutually compatible `iroh` / `iroh-blobs` pair from crates.io and adjust
+  `data/dapps/<id>`, then `verify_app` proves integrity -> `✓` badge.
+  ⚠️Pin a mutually compatible `iroh` / `iroh-blobs` pair from crates.io and adjust
   the API in the `p2p_impl` module (in `lib.rs`) if it drifted.
 
 ## Publishing requirements
