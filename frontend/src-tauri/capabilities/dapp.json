@@ -1,0 +1,26 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "dapp-bridge",
+  "description": "Restricted Web3 bridge for embedded dApps (window.smartholdem). Grants ONLY the Tauri event channel (emit/listen) to remote dApp origins so they can request authorization/transactions — they CANNOT invoke any backend command. All signing/approval stays user-gated in the host shell.",
+  "windows": ["app-*"],
+  "webviews": ["embed-*", "app-*"],
+  "remote": {
+    "urls": [
+      "sth://*",
+      "sth://*/*",
+      "http://sth.localhost",
+      "http://sth.localhost/*",
+      "https://sth.localhost",
+      "https://sth.localhost/*",
+      "http://*.sth.localhost",
+      "http://*.sth.localhost/*",
+      "https://*.sth.localhost",
+      "https://*.sth.localhost/*",
+      "http://localhost:*",
+      "http://localhost:*/*",
+      "https://*",
+      "http://*"
+    ]
+  },
+  "permissions": ["core:event:default"]
+}

@@ -1922,6 +1922,7 @@ export default {
     tpClearnetHint: 'Wallet calls route through the public clearnet node pool.',
     tpClick: 'click to switch node',
     view: {
+      tokens: 'Tokens',
       dashboard: 'WALLET',
       send: 'SEND',
       receive: 'RECEIVE',
@@ -1935,6 +1936,7 @@ export default {
       settings: 'WALLET SETTINGS',
     },
     bottom: {
+      tokens: 'TOKENS',
       apps: 'Apps',
       nodes: 'Nodes',
       settings: 'Settings',

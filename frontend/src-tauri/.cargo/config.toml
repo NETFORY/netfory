@@ -1,0 +1,34 @@
+# ============================================================
+#  Cargo: зеркало crates.io для сетей с блокировкой прямого доступа
+#  к index.crates.io (актуально для РФ). Ускоряет и «расблокирует»
+#  загрузку кратов (в т.ч. большого дерева arti для фичи `tor`).
+#
+#  Если конкретное зеркало у вас недоступно — замените URL на другое
+#  рабочее или закомментируйте блоки [source.*] и используйте VPN.
+#  Проверенные варианты sparse-зеркал (раскомментируйте одно):
+#    sparse+https://rsproxy.cn/index/
+#    sparse+https://mirror.sjtu.edu.cn/crates.io-index/
+#    sparse+https://crates-io.proxy.ustclug.org/index/
+# ============================================================
+
+[source.crates-io]
+replace-with = "mirror"
+
+[source.mirror]
+registry = "sparse+https://rsproxy.cn/index/"
+
+# Загружать git-зависимости системным git/curl (уважает системный прокси/VPN).
+[net]
+git-fetch-with-cli = true
+retry = 5
+
+[http]
+# Больше времени на медленных/нестабильных каналах.
+timeout = 60
+check-revoke = false
+
+# v1.135.233: libopus (audiopus_sys 0.2.2, крейт `opus`) собирается через CMake, а его
+# CMakeLists требует cmake_minimum_required < 3.5 — CMake 4.x (Visual Studio 2026) такое
+# отвергает. Переменная окружения CMAKE_POLICY_VERSION_MINIMUM разрешает конфигурацию.
+[env]
+CMAKE_POLICY_VERSION_MINIMUM = "3.5"

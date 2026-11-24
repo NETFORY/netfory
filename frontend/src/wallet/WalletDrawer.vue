@@ -24,6 +24,7 @@ import ConnectView from '@/wallet/views/ConnectView.vue'
 import AuthorizeMessageView from '@/wallet/views/AuthorizeMessageView.vue'
 import ConnectedAppsView from '@/wallet/views/ConnectedAppsView.vue'
 import NodesView from '@/wallet/views/NodesView.vue'
+import TokensView from '@/wallet/views/TokensView.vue'
 import WalletSettingsView from '@/wallet/views/WalletSettingsView.vue'
 
 const { t } = useI18n()
@@ -40,6 +41,7 @@ const views = {
   verify: VerifyView,
   connect: ConnectView,
   authorize: AuthorizeMessageView,
+  tokens: TokensView,
   apps: ConnectedAppsView,
   nodes: NodesView,
   settings: WalletSettingsView,
@@ -57,8 +59,8 @@ const showBottomBar = computed(
   () => !['verify', 'connect', 'authorize'].includes(wallet.currentView),
 )
 const bottomItems = computed(() => [
+  { id: 'tokens' as const, icon: '◈', label: t('wallet.bottom.tokens'), testid: 'wallet-bottom-tokens' },
   { id: 'apps' as const, icon: '⌨', label: t('wallet.bottom.apps'), testid: 'wallet-bottom-apps' },
-  { id: 'nodes' as const, icon: '⬢', label: t('wallet.bottom.nodes'), testid: 'wallet-bottom-nodes' },
   { id: 'settings' as const, icon: '⚙', label: t('wallet.bottom.settings'), testid: 'wallet-bottom-settings' },
 ])
 
@@ -136,7 +138,7 @@ onBeforeUnmount(() => {
           <button
             v-if="canGoBack"
             class="wd-back"
-            @click="wallet.setView('dashboard')"
+            @click="wallet.setView(wallet.currentView === 'nodes' ? 'settings' : 'dashboard')"
             data-testid="wallet-back-btn"
           >
             ‹
@@ -175,7 +177,7 @@ onBeforeUnmount(() => {
             v-for="it in bottomItems"
             :key="it.id"
             class="wd-tab"
-            :class="{ on: wallet.currentView === it.id }"
+            :class="{ on: wallet.currentView === it.id || (it.id === 'settings' && wallet.currentView === 'nodes') }"
             @click="wallet.setView(it.id)"
             :data-testid="it.testid"
           >
@@ -183,7 +185,7 @@ onBeforeUnmount(() => {
               {{ it.icon }}
               <!-- стрим sth/events/1 упал → работаем по legacy REST: точка-предупреждение -->
               <span
-                v-if="it.id === 'nodes' && !wallet.streamLive && isTauri"
+                v-if="it.id === 'settings' && !wallet.streamLive && isTauri"
                 class="wd-tab-dot"
                 :title="t('wallet.nodes.streamLegacy')"
                 data-testid="wallet-bottom-nodes-dot"

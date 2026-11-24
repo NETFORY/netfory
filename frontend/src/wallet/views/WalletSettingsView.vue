@@ -96,6 +96,13 @@ onBeforeUnmount(hide)
   <div class="wsettings" data-testid="wallet-settings">
     <p class="hdr-title">{{ t('wallet.settings.title') }}</p>
 
+    <!-- Узлы сети: перенесены из нижней панели в настройки -->
+    <button class="nodes-entry" @click="wallet.setView('nodes')" data-testid="settings-nodes-entry">
+      <span class="ne-ic">⬢</span>
+      <span class="ne-txt"><b>{{ t('wallet.bottom.nodes') }}</b><small class="dim">{{ t('wallet.nodes.title') }}<template v-if="!wallet.streamLive"> · {{ t('wallet.nodes.streamLegacy') }}</template></small></span>
+      <span class="ne-chev">›</span>
+    </button>
+
     <!-- Section: Accent (три облика, как в расширении) -->
     <div class="section neutral" data-testid="settings-accent-section">
       <div class="section-hdr">
@@ -181,6 +188,13 @@ onBeforeUnmount(hide)
 </template>
 
 <style scoped>
+.nodes-entry { display: flex; align-items: center; gap: 12px; width: 100%; padding: 13px 14px; margin-bottom: 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--surface, transparent); color: var(--text); font: inherit; text-align: left; cursor: pointer; transition: border-color 0.15s; }
+.nodes-entry:hover { border-color: var(--accent); }
+.ne-ic { color: var(--accent); font-size: 16px; }
+.ne-txt { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ne-txt b { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+.ne-txt small { font-size: 11px; }
+.ne-chev { color: var(--text-dim); font-size: 18px; }
 .wsettings {
   display: flex;
   flex-direction: column;

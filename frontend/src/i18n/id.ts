@@ -1770,6 +1770,7 @@ export default {
     tpClearnetHint: 'Panggilan dompet melalui pool node clearnet publik.',
     tpClick: 'klik untuk ganti node',
     view: {
+      tokens: 'Token',
       dashboard: 'DOMPET',
       send: 'KIRIM',
       receive: 'TERIMA',
@@ -1783,6 +1784,7 @@ export default {
       settings: 'PENGATURAN DOMPET',
     },
     bottom: {
+      tokens: 'TOKEN',
       apps: 'Aplikasi',
       nodes: 'Node',
       settings: 'Pengaturan',

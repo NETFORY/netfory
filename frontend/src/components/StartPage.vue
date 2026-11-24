@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Стартовая страница новой вкладки: поиск по SmartNet (dApps, имена u://, сайты,
 // которые вы раздаёте/сохранили) с запасным вариантом — Google.
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, defineEmits, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useDiscoveryStore } from '@/store/discovery'
 import { useBookmarksStore } from '@/store/bookmarks'

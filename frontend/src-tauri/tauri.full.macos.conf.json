@@ -1,0 +1,12 @@
+{
+  "build": {
+    "beforeBuildCommand": ""
+  },
+  "bundle": {
+    "externalBin": [
+      "oxid-mail",
+      "ntfry-messenger",
+      "mycelium-tun"
+    ]
+  }
+}

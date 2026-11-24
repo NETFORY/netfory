@@ -1,3 +1,4 @@
+import { watch } from 'vue'
 import { createI18n } from 'vue-i18n'
 import ru from './ru'
 import en from './en'
@@ -43,3 +44,10 @@ export const i18n = createI18n({
   fallbackLocale: 'en',
   messages: { ru, en, id },
 })
+
+// Язык страниц ошибок / HUD WebView и меню ссылок живёт в Rust — сообщаем при старте и при смене
+const pushLocale = (lang: string) => {
+  if (typeof window === 'undefined' || !('__TAURI_INTERNALS__' in window)) return
+  import('@tauri-apps/api/core').then(({ invoke }) => invoke('ui_set_locale', { lang })).catch(() => {})
+}
+watch(() => i18n.global.locale.value, pushLocale, { immediate: true })

@@ -1,0 +1,13 @@
+{
+  "build": {
+    "beforeBuildCommand": ""
+  },
+  "bundle": {
+    "resources": [
+      "oxid-mail.exe",
+      "ntfry-messenger.exe",
+      "mycelium-tun.exe",
+      "wintun.dll"
+    ]
+  }
+}

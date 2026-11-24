@@ -25,7 +25,7 @@ import { friendlyTxError } from '@/lib/bridge'
 import { useNetStore } from '@/store/net'
 import { useAuthStore } from '@/store/auth'
 
-export type WalletView = 'dashboard' | 'send' | 'receive' | 'swap' | 'history' | 'verify' | 'connect' | 'authorize' | 'apps' | 'nodes' | 'settings'
+export type WalletView = 'dashboard' | 'send' | 'receive' | 'swap' | 'history' | 'verify' | 'connect' | 'authorize' | 'tokens' | 'apps' | 'nodes' | 'settings'
 
 // kept at module scope (non-reactive, not serialized into state)
 let unlisten: UnlistenFn | null = null

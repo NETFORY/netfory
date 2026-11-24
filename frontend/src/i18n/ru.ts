@@ -1924,6 +1924,7 @@ export default {
     tpClearnetHint: 'Запросы кошелька идут через публичный clearnet-пул узлов.',
     tpClick: 'нажмите, чтобы сменить узел',
     view: {
+      tokens: 'Токены',
       dashboard: 'КОШЕЛЁК',
       send: 'ОТПРАВКА',
       receive: 'ПОЛУЧЕНИЕ',
@@ -1937,6 +1938,7 @@ export default {
       settings: 'НАСТРОЙКИ КОШЕЛЬКА',
     },
     bottom: {
+      tokens: 'ТОКЕНЫ',
       apps: 'Приложения',
       nodes: 'Узлы',
       settings: 'Настройки',
